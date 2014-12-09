@@ -5,7 +5,6 @@ var rename = require('gulp-rename');
 var connect = require('gulp-connect');
 var minifycss = require('gulp-minify-css');
 var browserSync = require("browser-sync");
-var install = require("gulp-install");
 
 var paths = {
     styles: {
@@ -24,8 +23,6 @@ var displayError = function(error) {
 		errorString += ' on line ' + error.lineNumber;
 	console.error(errorString);
 };
-
-gulp.src(['./bower.json', './package.json']).pipe(install());
 
 gulp.task('sass', function (){
 	return gulp.src(paths.styles.files)
