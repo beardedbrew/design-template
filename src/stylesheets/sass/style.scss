@@ -12,20 +12,6 @@
 
 Purpose: Define styles for your design utilizing SASS
 Reference: http://sass-lang.com/
-
-*/
-
-/*
- ▄████▄    ██████   ██████ 
-▒██▀ ▀█  ▒██    ▒ ▒██    ▒ 
-▒▓█    ▄ ░ ▓██▄   ░ ▓██▄   
-▒▓▓▄ ▄██▒  ▒   ██▒  ▒   ██▒
-▒ ▓███▀ ░▒██████▒▒▒██████▒▒
-░ ░▒ ▒  ░▒ ▒▓▒ ▒ ░▒ ▒▓▒ ▒ ░
-  ░  ▒   ░ ░▒  ░ ░░ ░▒  ░ ░
-░        ░  ░  ░  ░  ░  ░  
-░ ░            ░        ░  
-░ 
 */
 
 // Core variables and mixins
@@ -78,5 +64,9 @@ Reference: http://sass-lang.com/
 // Utility classes
 @import "bootstrap/utilities";
 @import "bootstrap/responsive-utilities";
-
 @import "helpers";
+
+/* 
+Modify _design.scss to add your own style
+*/
+@import "design";
