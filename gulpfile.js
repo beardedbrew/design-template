@@ -1,10 +1,16 @@
-var gulp = require('gulp');
-var sass = require('gulp-sass');
-var prefix = require('gulp-autoprefixer');
-var rename = require('gulp-rename');
-var connect = require('gulp-connect');
-var minifycss = require('gulp-minify-css');
-var browserSync = require("browser-sync");
+var gulp = require('gulp'),
+	gutil = require('gulp-util'),
+	sass = require('gulp-sass'),
+	prefix = require('gulp-autoprefixer'),
+	rename = require('gulp-rename'),
+	connect = require('gulp-connect'),
+	minifycss = require('gulp-minify-css'),
+	browserSync = require("browser-sync"),
+	reload = browserSync.reload,
+	react = require('gulp-react'),
+	cjsx = require('gulp-cjsx'),
+	coffee = require('gulp-coffee'),
+	sourcemaps = require('gulp-sourcemaps');
 
 var paths = {
     styles: {
@@ -12,6 +18,16 @@ var paths = {
 		files: './src/stylesheets/sass/**/*.scss',
 		dest: './src/stylesheets/css'
 	},
+	react: {
+		src: './src/react',
+		jsx_files: './src/react/*.jsx',
+		cjsx_files: './src/react/*.cjsx',
+		dest: './src/build'
+	},
+	coffee: {
+		files: './src/scripts/app.coffee',
+		dest: './src/scripts'
+	}
 };
 
 var displayError = function(error) {
@@ -24,8 +40,27 @@ var displayError = function(error) {
 	console.error(errorString);
 };
 
+function logger(evt) {
+	console.log(
+		'[watcher] File ' + evt.path.replace(/.*(?=sass)/,'') + ' was ' + evt.type + ', compiling...'
+	);
+}
+
+gulp.task('webserver', function() {
+  browserSync({
+    open: true,
+    port: 1338,
+    server: {
+      baseDir: "./"
+    },
+    notify: {
+      styles: ['opacity: 0', 'position: absolute']
+    }
+  });
+});
+
 gulp.task('sass', function (){
-	return gulp.src(paths.styles.files)
+	gulp.src(paths.styles.files)
 		.pipe(sass({
 			outputStyle: 'expanded',
 			sourceComments: 'map',
@@ -34,47 +69,61 @@ gulp.task('sass', function (){
 		}))
 		.pipe(prefix('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
 		.pipe(gulp.dest(paths.styles.dest))
-		.pipe(browserSync.reload({stream:true}));
+		.pipe(reload({stream: true}));
 });
 
-gulp.task('sass-min', function (){
-	gulp.src(paths.styles.files)
-		.pipe(sass({
-			outputStyle: 'compressed',
-			sourceComments: 'map',
-			includePaths : [paths.styles.src],
-			errLogToConsole: true
-		}))
-		.pipe(prefix('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
-		.pipe(rename({suffix: '.min'}))
-		.pipe(minifycss())
-		.pipe(gulp.dest(paths.styles.dest));
-});
+// gulp.task('sass-min', function (){
+// 	gulp.src(paths.styles.files)
+// 		.pipe(sass({
+// 			outputStyle: 'compressed',
+// 			sourceComments: 'map',
+// 			includePaths : [paths.styles.src],
+// 			errLogToConsole: true
+// 		}))
+// 		.pipe(prefix('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
+// 		.pipe(rename({suffix: '.min'}))
+// 		.pipe(minifycss())
+// 		.pipe(gulp.dest(paths.styles.dest));
+// });
 
-gulp.task('html', function () {
-	gulp.watch(["./*.html"], function () {
-      browserSync.reload();
-    });
-});
-
-gulp.task('webserver', function() {
-    browserSync({
-      open: true,
-      port: 1338,
-      server: {
-            baseDir: "./"
-      },
-      notify: {
-        styles: ['opacity: 0', 'position: absolute']
-      }
-    });
-});
-
-gulp.task('default', ['sass','sass-min','html', 'webserver'], function() {
-	gulp.watch(paths.styles.files, ['sass', 'sass-min', browserSync.reload])
-	.on('change', function(evt) {
-		console.log(
-			'[watcher] File ' + evt.path.replace(/.*(?=sass)/,'') + ' was ' + evt.type + ', compiling...'
-		);
+gulp.task('html', function() {
+	gulp.watch('./index.html', function() {
+		reload();
 	});
 });
+
+gulp.task('coffee', function() {
+	gulp.src(paths.coffee.files)
+	.pipe(sourcemaps.init())
+	.pipe(coffee({bare: true}).on('error', gutil.log))
+	.pipe(sourcemaps.write())
+	.pipe(gulp.dest(paths.coffee.dest));
+});
+
+gulp.task('react', function() {
+	gulp.src(paths.react.jsx_files)
+	.pipe(react())
+	.pipe(gulp.dest(paths.react.dest));
+
+	gulp.src(paths.react.cjsx_files)
+	.pipe(cjsx({bare: true}).on('error', gutil.log))
+	.pipe(gulp.dest(paths.react.dest));
+});
+
+
+gulp.task('watcher', function() {
+	
+	// gulp.watch(paths.styles.files, ['sass', 'sass-min'])
+	// .on('change', logger);
+
+	gulp.watch(paths.styles.files, ['sass'])
+	.on('change', logger);
+
+	gulp.watch([paths.react.jsx_files, paths.react.cjsx_files], ['react', reload])
+	.on('change', logger);
+
+	gulp.watch(paths.coffee.files, ['coffee']);
+});
+
+// gulp.task('default', ['sass','sass-min','webserver', 'react', 'watcher']);
+gulp.task('default', ['sass', 'react', 'coffee', 'html', 'webserver','watcher']);
