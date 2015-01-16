@@ -21,3 +21,7 @@ Design will be available at http://localhost:1338/
 /index.html - Create your design
 
 /src/stylesheets/sass/_design.scss - Create your styles
+
+/src/scripts - Write scripts in vanilla javascript or in coffee (will compile back into this directory)
+
+/src/react - Write react in jsx or cjsx (will compile to javascript in /build/app.js)
