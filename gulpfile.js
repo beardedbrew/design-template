@@ -102,7 +102,7 @@ gulp.task('coffee', function() {
 
 gulp.task('react', function() {
 	gulp.src(paths.react.jsx_files)
-	.pipe(react())
+	.pipe(react().on('error', gutil.log))
 	.pipe(gulp.dest(paths.react.dest));
 
 	gulp.src(paths.react.cjsx_files)
