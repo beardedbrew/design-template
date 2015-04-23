@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "dependencies": {
     "browser-sync": "^1.7.0",
+    "cjsx-loader": "^2.0.1",
     "gulp": "^3.5.5",
     "gulp-autoprefixer": "~0.0.3",
     "gulp-cjsx": "^2.0.0",
@@ -14,6 +15,7 @@
     "gulp-rename": "^1.2.0",
     "gulp-sass": "^0.7.1",
     "gulp-sourcemaps": "^1.3.0",
-    "gulp-util": "^3.0.2"
+    "gulp-util": "^3.0.2",
+    "gulp-webpack": "^1.4.0"
   }
 }
