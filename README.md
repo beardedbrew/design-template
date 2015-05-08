@@ -25,3 +25,5 @@ Design will be available at http://localhost:1338/
 /src/scripts - Write scripts in vanilla javascript or in coffee (will compile back into this directory)
 
 /src/react - Write react in jsx or cjsx (will compile to javascript in /build/app.js)
+
+JSON Server is running on http://localhost:3000 for more information on Json Server refer to [Here](https://github.com/typicode/json-server)
