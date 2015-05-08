@@ -10,7 +10,8 @@ var gulp = require('gulp'),
 	react = require('gulp-react'),
 	cjsx = require('gulp-cjsx'),
 	coffee = require('gulp-coffee'),
-	sourcemaps = require('gulp-sourcemaps');
+	sourcemaps = require('gulp-sourcemaps')
+	jsonServer = require('json-server');
 
 var paths = {
     styles: {
@@ -46,7 +47,7 @@ function logger(evt) {
 	);
 }
 
-gulp.task('webserver', function() {
+gulp.task('static', function() {
   browserSync({
     open: true,
     port: 1338,
@@ -112,7 +113,7 @@ gulp.task('react', function() {
 
 
 gulp.task('watcher', function() {
-	
+
 	// gulp.watch(paths.styles.files, ['sass', 'sass-min'])
 	// .on('change', logger);
 
@@ -125,5 +126,12 @@ gulp.task('watcher', function() {
 	gulp.watch(paths.coffee.files, ['coffee']);
 });
 
+gulp.task('backend', function () {
+	var server = jsonServer.create();
+	server.use(jsonServer.defaults);
+	server.use(jsonServer.router('backend.json'));
+	server.listen(3000);
+});
+
 // gulp.task('default', ['sass','sass-min','webserver', 'react', 'watcher']);
-gulp.task('default', ['sass', 'react', 'coffee', 'html', 'webserver','watcher']);
+gulp.task('default', ['sass', 'react', 'coffee', 'html', 'static', 'backend','watcher']);
