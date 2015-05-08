@@ -28,6 +28,9 @@ var paths = {
 	coffee: {
 		files: './src/scripts/app.coffee',
 		dest: './src/scripts'
+	},
+	json: {
+		backend: './backend.json'
 	}
 };
 
@@ -131,6 +134,7 @@ gulp.task('backend', function () {
 	server.use(jsonServer.defaults);
 	server.use(jsonServer.router('backend.json'));
 	server.listen(3000);
+	gutil.log(gutil.colors.magenta('JSON-Server listening on port 3000..!'));
 });
 
 // gulp.task('default', ['sass','sass-min','webserver', 'react', 'watcher']);
