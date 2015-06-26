@@ -1,0 +1,6 @@
+.git
+node_modules
+.settings
+*.log
+client/static/
+!client/static/index.html
